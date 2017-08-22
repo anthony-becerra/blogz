@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{title}}</title>
+        <style>
+            .error{
+                color: red;
+            }
+
+            .title{
+                text-align: center;
+            }
+
+            textarea {
+                width: 300px;
+                height: 120px;
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <a href="/blog">Main Blog Page</a> |
+            <a href="/newpost">Add a Blog Entry</a>
+        </nav>
+        <!-- <div>
+            <a href='/logout'>log out</a>
+        </div> -->
+
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            <ul>
+            {% for category,message in messages %}
+                <li class="{{category}}">{{message}}</li>
+            {% endfor %}
+            </ul>
+        {% endwith %}
+        <!-- Create block to insert body data from other files -->
+        {% block content %} 
+        {% endblock %}
+
+    </body>
+</html>

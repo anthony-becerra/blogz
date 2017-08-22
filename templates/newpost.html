@@ -1,0 +1,24 @@
+{% extends "base.html" %} <!--Bring in boiler plate html code from base.html --> 
+
+{% block content %}
+    <h1 class="title">Add a Blog Entry</h1>
+
+    <h2>Add a new post:</h2>
+    <form method='POST'>
+
+        <div>Title for your new blog:</div>
+        <input type="text" name="blog_title" />
+
+        <br/>
+        <br/>
+
+        <div>Your new blog:</div>
+        <textarea name="blog_body"></textarea>
+          
+        <br/>
+        <br/>
+
+        <input type="submit" value="Add Entry" />
+    </form>
+
+{% endblock %}
