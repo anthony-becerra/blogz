@@ -24,8 +24,8 @@ def blog():
 
     blogs = Blog.query.all()
 
-    if request.args.get('id'):
-        blog_id = request.args.get('id')
+    blog_id = request.args.get('id')
+    if blog_id:
         single_blog = Blog.query.filter_by(id=blog_id).first()
         return render_template('single_blog.html', title="Build-a-Blog: New Blog Entry", single_blog=single_blog)
 
