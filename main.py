@@ -47,9 +47,9 @@ def newpost():
             return redirect('/blog?id='+ blog_id)
 
         if not blog_title:
-            flash("Please enter a blog title.", "error")
+            flash("Please enter a blog title.", "error1")
         if not blog_body:
-            flash("Please enter a blog body.", "error")
+            flash("Please enter a blog body.", "error2")
         return redirect('/newpost')
 
     return render_template('newpost.html', title="Build-a-Blog: New Blog Entry")

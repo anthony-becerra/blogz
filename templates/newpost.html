@@ -7,14 +7,24 @@
     <form method='POST'>
 
         <div>Title for your new blog:</div>
-        <input type="text" name="blog_title" />
+        <input type="text" name="blog_title" />       
+        {% with messages = get_flashed_messages(with_categories=True,category_filter=["error1"]) %}
+        {% for category,message in messages %}
+            <span class="{{category}}">• {{message}}</span>
+        {% endfor %}
+        {% endwith %}
 
         <br/>
         <br/>
 
         <div>Your new blog:</div>
         <textarea name="blog_body"></textarea>
-          
+        {% with messages = get_flashed_messages(with_categories=True,category_filter=["error2"]) %}
+        {% for category,message in messages %}
+            <span class="{{category}}">• {{message}}</span>
+        {% endfor %}
+        {% endwith %}
+
         <br/>
         <br/>
 
