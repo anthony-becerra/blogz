@@ -1,5 +1,6 @@
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -13,12 +14,16 @@ class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120))
     body = db.Column(db.Text)
+    date = db.Column(db.DateTime)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self,title,body,owner):
+    def __init__(self,title,body,owner,date=None):
         self.title = title
         self.body = body
         self.owner = owner
+        if date == None:
+            date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+        self.date = date
 
     def __repr__(self):
         return '<Blog %r>' % self.title
@@ -37,11 +42,24 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
+# Run following function before you call request handler for incoming request
+@app.before_request 
+def require_login():
+    allowed_routes = ['login','signup','blog','index'] # List of routes user can see without logging in.
+    if request.endpoint not in allowed_routes and 'username' not in session:
+        return redirect('/login')
+
+
+@app.route('/')
+def index():
+    users = User.query.all()
+    return render_template('index.html', title="DragonBlogZ - Home", users=users)
+    
 
 @app.route('/login', methods=["POST", "GET"])
 def login():
     if request.method == 'GET':
-        return render_template('login.html')
+        return render_template('login.html', title="DragonBlogZ - Login")
     elif request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -52,11 +70,18 @@ def login():
                 flash('bad password', 'error2')
                 return redirect("/login")
             elif password == user.password:
-                session['user'] = user.username
+                session['username'] = user.username
                 # flash('Welcome back, '+user.username) >>> figure work around to do this AND errors on /newpost
                 return redirect("/newpost")
         flash('bad username', 'error1')
         return redirect("/login")
+
+
+@app.route('/logout')
+def logout():
+  del session['username']
+  return redirect('/')
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -84,22 +109,31 @@ def signup():
         user = User(username=username, password=password)
         db.session.add(user)
         db.session.commit()
-        session['user'] = user.username
+        session['username'] = user.username
         return redirect("/newpost")
     else:
-        return render_template('signup.html')
+        return render_template('signup.html', title="DragonBlogZ - Signup")
 
 @app.route('/blog')
 def blog():
 
-    blogs = Blog.query.all()
+    blogs = Blog.query.order_by(Blog.date.desc()).all()
+    users = User.query.all()
 
     blog_id = request.args.get('id')
+    get_user = request.args.get('user')
+
     if blog_id:
         single_blog = Blog.query.filter_by(id=blog_id).first()
-        return render_template('single_blog.html', title="Build-a-Blog: New Blog Entry", single_blog=single_blog)
+        return render_template('single_blog.html', title="DragonBlogZ - All Posts", single_blog=single_blog)
 
-    return render_template('blog.html', title="Build-a-Blog: New Blog Entry", blogs=blogs)
+    if get_user:
+        owner = User.query.filter_by(username=get_user).first()
+        blogs = Blog.query.filter_by(owner=owner).order_by(Blog.date.desc()).all()
+        return render_template('blog.html', title="DragonBlogZ - All Posts", blogs=blogs, users=users)
+
+
+    return render_template('blog.html', title="DragonBlogZ - All Posts", blogs=blogs, users=users)
 
 
 @app.route('/newpost', methods=["POST", "GET"])
@@ -109,8 +143,9 @@ def newpost():
     if request.method == "POST":
         blog_title = request.form['blog_title']
         blog_body = request.form['blog_body']
+        owner = owner = User.query.filter_by(username=session["username"]).first()
         if blog_title and blog_body:
-            new_blog = Blog(blog_title, blog_body)
+            new_blog = Blog(blog_title, blog_body, owner)
             db.session.add(new_blog)
             db.session.commit()
             blog_id = str(new_blog.id)
@@ -122,7 +157,7 @@ def newpost():
             flash("Please enter a blog body.", "error2")
         return redirect('/newpost')
 
-    return render_template('newpost.html', title="Build-a-Blog: New Blog Entry")
+    return render_template('newpost.html', title="DragonBlogZ - New Post")
 
 
 if __name__ == '__main__':

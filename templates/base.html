@@ -4,16 +4,51 @@
         <title>{{title}}</title>
         <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet"> 
         <style>
+            body{
+                background-image: url(http://wallpapercave.com/wp/XbmNalC.jpg);
+                background-repeat: no-repeat;
+                background-size: 100%;
+            }
+
+            a:link, a:visited {
+                background-color: orange;
+                color: white;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+            }
+            
+            
+            a:hover, a:active {
+                background-color: orangered;
+            }
+
+            .title{
+                text-align: center;
+                text-decoration: underline;
+            }
+            
+            .post-author {
+                font-style: italic;
+                font-size: 12px;
+                background-color: black;
+                color: orange;
+                display: inline-block;
+            }
+
+            .blog-body {
+                font-weight: bold;
+                background-color: black;
+                color: orange;
+                display: inline-block;
+            }
+            
             .error, .error1, .error2, .user_taken,
             .username_error, .password_error, .verify_error
             {
                 color: red;
                 font-family: 'VT323', monospace;
                 font-size: 20px;
-            }
-
-            .title{
-                text-align: center;
             }
 
             textarea {
@@ -44,6 +79,10 @@
                 margin-right: 15px;
             }
 
+            nav ul li a {
+                padding: 5px 10px;
+            }
+
             nav #user-account {
                 float: right;
             }
@@ -53,13 +92,13 @@
         <nav>
             <nav>
                 <ul id="user-account">
-                    <li><a href="/login">login</a></li>
-                    <li><a href="/logout">logout</a></li>
+                    <li><a href="/login">LOGIN</a></li>
+                    <li><a href="/logout">LOGOUT</a></li>
                 </ul>
                 <ul>
-                    <li><a href="/">home</a></li>
-                    <li><a href="/blog">all posts</a></li>
-                    <li><a href="/newpost">new post</a></li>
+                    <li><a href="/">HOME</a></li>
+                    <li><a href="/blog">ALL POST</a></li>
+                    <li><a href="/newpost">NEW POST</a></li>
                 </ul>
             </nav>
         <!-- <div>
